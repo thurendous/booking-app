@@ -46,7 +46,7 @@ func main() {
 		if isValidName && isValidEmail && isValidTickest {
 
 			bookTicket(userTickets, firstName, lastName, email)
-			sendTicket(userTickets, firstName, lastName, email)
+			go sendTicket(userTickets, firstName, lastName, email)
 
 			noTicketsRemained := remainingTickets == 0
 			if noTicketsRemained {
@@ -150,9 +150,16 @@ func bookTicket(userTickets uint, firstName string, lastName string, email strin
 }
 
 func sendTicket(userTickets uint, firstName string, lastName string, email string) {
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second) // this can block the application
 	var ticket = fmt.Sprintf("Sending %v tickets to %v %v\n", userTickets, firstName, lastName)
 	fmt.Println("######################")
 	fmt.Printf("sending ticket\n %v \n email to the user... %v\n", ticket, email)
 	fmt.Println("######################")
+	// wg.Done() // this is to tell the main thread that this go routine is done
 }
+
+// var wg = sync.waitGroup()
+// wg.Add(1) // for 1 go routine. it means the main thread should wait for this thread to end
+// go sendTicket(userTickets, firstName, lastName, email)
+
+// wg.Wait() // wait for all go routines to finish
